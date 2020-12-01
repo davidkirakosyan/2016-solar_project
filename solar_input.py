@@ -17,46 +17,17 @@ def read_space_objects_data_from_file(input_filename):
             if len(line.strip()) == 0 or line[0] == '#':
                 continue  # пустые строки и строки-комментарии пропускаем
             object_type = line.split()[0].lower()
-            if object_type == "star":  # FIXME: Добавь данные с файла
-                star = CelestialBody(
-                    "star",
-                    1000,
-                    1,
-                    2,
-                    0.03,
-                    0.04,
-                    0,
-                    0,
-                    10,
-                    "red",
-                    None
-                )
-                parse_star_parameters(line, star)
-                objects.append(star)
-            elif object_type == "planet":
-                planet = CelestialBody(
-                    "planet"
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    5,
-                    "green",
-                    None
-                    )
-                parse_planet_parameters(line, planet)
-                objects.append(planet)
-                # FIXME: Делай тоже самое для планет
-            else:
+            if object_type not in ["star", "planet"]:
                 print("Unknown space object")
+            else:
+                object_parameters = parse_parameters(line)
+                body = CelestialBody(*object_parameters)
+                objects.append(body)
 
     return objects
 
 
-def parse_celestialbodies_parameters(line, object_type):
+def parse_parameters(line):
     """Считывает данные о звезде/планете из строки.
     Входная строка должна иметь слеюущий формат:
     Star/Planet <радиус в пикселах> <цвет> <масса> <x> <y> <Vx> <Vy>
@@ -67,15 +38,13 @@ def parse_celestialbodies_parameters(line, object_type):
     **line** — строка с описание звезды.
     **star/planet** — объект звезды.
     """
-    line = line.split()
-    object_type.R = float(line[1])
-    object_type.color = float(line[2])
-    object_type.m = float(line[3])
-    object_type.x = float(line[4])
-    object_type.y = float(line[5])
-    object_type.Vx = float(line[6])
-    object_type.Vy = float(line[7])
-    pass  # FIXME: not done yet...
+    obj_params = []
+    for data in line.strip().split():
+        try:
+            obj_params.append(float(data))
+        except:
+            obj_params.append(data)
+    return obj_params
 
 
 def write_space_objects_data_to_file(output_filename, space_objects):
@@ -89,20 +58,10 @@ def write_space_objects_data_to_file(output_filename, space_objects):
     """
     with open(output_filename, 'w') as out_file:
         for obj in space_objects:
-            print(out_file, "%s %d %s %f" % ('type',  #!!!
-                                             obj.R,
-                                             obj.color,
-                                             obj.m, 
-                                             obj.x, 
-                                             obj.y, 
-                                             obj.Vx, 
-                                             obj.Vy
-                                             )
-                  )
-            # FIXME: should store real values
+            params = [obj.type.title(), obj.R, obj.color, obj.m, obj.x, obj.y, obj.Vx, obj.Vy]
+            string = ' '.join(map(str, params)) + '\n'
+            out_file.write(string)
 
-
-# FIXME: хорошо бы ещё сделать функцию, сохранающую статистику в заданный файл...
 
 if __name__ == "__main__":
     print("This module is not for direct call!")

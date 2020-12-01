@@ -8,18 +8,18 @@ class CelestialBody:
     а также визуальный радиус в пикселах и его цвет.
     """
 
-    def __init__(self, type, m, x, y, Vx, Vy, Fx, Fy, R, color, image):
-        self.type = type
+    def __init__(self, type, R, color, m, x, y, Vx, Vy):
+        self.type = type.lower()
+        self.R = R
+        self.color = color
         self.m = m
         self.x = x
         self.y = y
         self.Vx = Vx
         self.Vy = Vy
-        self.Fx = Fx
-        self.Fy = Fy
-        self.R = R
-        self.color = color
-        self.image = image
+        self.Fx = None
+        self.Fy = None
+        self.image = None
 
     def move(self, dt):
         """
@@ -28,6 +28,7 @@ class CelestialBody:
         Параметры:
         dt - шаг по времени.
         """
+        dt *= 3600
         self.x += self.Vx * dt
         self.y += self.Vy * dt
         self.Vx += self.Fx / self.m * dt
